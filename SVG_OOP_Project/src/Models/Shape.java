@@ -2,11 +2,15 @@ package Models;
 
 public abstract class Shape {
 
-    protected int x;
-    protected int y;
+    protected double x;
+    protected double y;
 
+    public Shape(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
 
-    public int getX() {
+    public double getX() {
         return x;
     }
 
@@ -14,7 +18,7 @@ public abstract class Shape {
         this.x = x;
     }
 
-    public int getY() {
+    public double getY() {
         return y;
     }
 
@@ -22,7 +26,7 @@ public abstract class Shape {
         this.y = y;
     }
 
-    public void translate(int x, int y) {
+    public void translate(double x, double y) {
         this.x = x;
         this.y = y;
     }
