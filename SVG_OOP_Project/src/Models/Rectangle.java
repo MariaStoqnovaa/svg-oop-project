@@ -1,6 +1,7 @@
 package Models;
 
-public class Rectangle extends Shape {
+public class Rectangle extends Shape
+{
 
     private int a;
     private int b;
