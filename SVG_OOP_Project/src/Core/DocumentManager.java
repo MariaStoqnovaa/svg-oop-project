@@ -9,8 +9,4 @@ public class DocumentManager
 {
     private List<Shape> shapes = new ArrayList<>();
     private String currentFilePath = null;
-
-
-
-
 }

@@ -1,63 +1,76 @@
 package Models;
 
-public class Line extends Shape
-{
-    private double xLine;
-    private double yLine;
-    private String colorOfLine;
+public class Line extends Shape {
 
-    public Line(double x, double y, String colorOfLine, double xLine, double yLine) {
-        super(x, y);
-        this.colorOfLine = colorOfLine;
-        this.xLine = xLine;
-        this.yLine = yLine;
+    private Point endPoint;
+    private String stroke;
+
+    public Line(double x1, double y1, double x2, double y2, String stroke) {
+        super(x1, y1);
+        this.endPoint = new Point(x2, y2);
+        this.stroke = stroke;
     }
 
-    public String getColorOfLine() {
-        return colorOfLine;
+    public double getX2() {
+        return endPoint.getX();
     }
 
-    public double getxLine() {
-        return xLine;
+    public double getY2() {
+        return endPoint.getY();
     }
 
-    public double getyLine() {
-        return yLine;
+    public String getStroke() {
+        return stroke;
     }
 
     @Override
-    boolean isInRegion(Shape region)
-    {
-        if(region instanceof Rectangle rect)
-        {
-            return x >= rect.getX() &&
-                    x <= rect.getX() + rect.getA() &&
-                    y >= rect.getY() &&
-                    y <= rect.getY() + rect.getB() &&
-                    xLine >= rect.getX() &&
-                    xLine <= rect.getX() + rect.getA() &&
-                    yLine >= rect.getY() &&
-                    yLine <= rect.getY() + rect.getB();
+    public void translate(double horizontal, double vertical) {
+        super.translate(horizontal, vertical);
+        endPoint.translate(horizontal, vertical);
+    }
+
+    @Override
+    public boolean isInRegion(Shape region) {
+        if (region instanceof Rectangle) {
+            Rectangle rect = (Rectangle) region;
+
+            boolean startInside = getX() >= rect.getX()
+                    && getX() <= rect.getX() + rect.getWidth()
+                    && getY() >= rect.getY()
+                    && getY() <= rect.getY() + rect.getHeight();
+
+            boolean endInside = getX2() >= rect.getX()
+                    && getX2() <= rect.getX() + rect.getWidth()
+                    && getY2() >= rect.getY()
+                    && getY2() <= rect.getY() + rect.getHeight();
+
+            return startInside && endInside;
         }
-        else if(region instanceof Circle circ)
-        {
-            return circleIsPoint(x,y,circ) &&
-                    circleIsPoint(xLine,yLine,circ);
+
+        if (region instanceof Circle) {
+            Circle circ = (Circle) region;
+            return pointInCircle(getX(), getY(), circ)
+                && pointInCircle(getX2(), getY2(), circ);
         }
 
         return false;
     }
 
-    private boolean circleIsPoint(double px,double py,Circle c)
-    {
+
+    private boolean pointInCircle(double px, double py, Circle c) {
         double dx = px - c.getX();
         double dy = py - c.getY();
         return dx * dx + dy * dy <= c.getRadius() * c.getRadius();
     }
 
     @Override
-    String toSVG()
-    {
-        return "<line center X= " + xLine + ",center Y= " + yLine + ",x2 = " + x + "y2 = " + y + ",color of line = " + colorOfLine;
+    public String toSVG() {
+        return String.format("<line x1=\"%.1f\" y1=\"%.1f\" x2=\"%.1f\" y2=\"%.1f\" stroke=\"%s\" />",
+                getX(), getY(), getX2(), getY2(), stroke);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("line %.1f %.1f %.1f %.1f %s", getX(), getY(), getX2(), getY2(), stroke);
     }
 }

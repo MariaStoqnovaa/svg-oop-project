@@ -1,53 +1,57 @@
 package Models;
 
-public class Circle extends Shape{
+public class Circle extends Shape {
 
     private double radius;
-    private String colorFill;
+    private String fill;
 
-    public Circle(double x, double y, String colorFill, double radius) {
+    public Circle(double x, double y, double radius, String fill) {
         super(x, y);
-
-        if(radius < 0)
-        {
-            throw new IllegalArgumentException("Radius can't be null");
+        if (radius < 0) {
+            throw new IllegalArgumentException("Radius cannot be negative!");
         }
-
-        this.colorFill = colorFill;
         this.radius = radius;
-    }
-
-    public String getColorFill() {
-        return colorFill;
+        this.fill = fill;
     }
 
     public double getRadius() {
         return radius;
     }
 
+    public String getFill() {
+        return fill;
+    }
+
     @Override
-    boolean isInRegion(Shape region)
-    {
-        if(region instanceof Rectangle rect)
-        {
-            return  x - radius >= rect.getX() &&
-                    x + radius <= rect.getX() + rect.getA() &&
-                    y - radius >= rect.getY() &&
-                    y + radius <= rect.getY() + rect.getB();
+    public boolean isInRegion(Shape region) {
+        if (region instanceof Rectangle) {
+            Rectangle rect = (Rectangle) region;
+            boolean leftOk  = getX() - radius >= rect.getX();
+            boolean rightOk = getX() + radius <= rect.getX() + rect.getWidth();
+            boolean topOk   = getY() - radius >= rect.getY();
+            boolean botOk   = getY() + radius <= rect.getY() + rect.getHeight();
+            return leftOk && rightOk && topOk && botOk;
         }
-        if(region instanceof Circle circle)
-        {
-            double dx = x - circle.getX();
-            double dy = y - circle.getY();
-            double d = Math.sqrt(dx * dx + dy * dy);
-            return d + radius <= circle.getRadius();
+
+        if (region instanceof Circle) {
+            Circle other = (Circle) region;
+            double dx = getX() - other.getX();
+            double dy = getY() - other.getY();
+            double distance = Math.sqrt(dx * dx + dy * dy);
+            return distance + radius <= other.getRadius();
         }
+
         return false;
     }
 
     @Override
-    String toSVG()
-    {
-        return "<circle center X= " + x + ",center Y= " + y + ",radius= " + radius + ",color fill = " + colorFill;
+    public String toSVG() {
+        return String.format("<circle cx=\"%.1f\" cy=\"%.1f\" r=\"%.1f\" fill=\"%s\" />",
+                getX(), getY(), radius, fill);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("circle %.1f %.1f %.1f %s", getX(), getY(), radius, fill);
     }
 }
