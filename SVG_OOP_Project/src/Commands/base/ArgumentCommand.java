@@ -1,7 +1,5 @@
-package Core.Commands.base;
+package Commands.base;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public abstract class ArgumentCommand extends  Command

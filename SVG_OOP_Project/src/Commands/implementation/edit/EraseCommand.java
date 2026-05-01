@@ -1,13 +1,14 @@
-package Core.Commands.implementation.edit;
+package Commands.implementation.edit;
 
-import Core.Commands.base.Command;
+import Commands.base.Command;
 import Core.ShapeRepository;
-import Core.Messages;
+import constants.Messages;
 import Models.Shape;
 
 
 public class EraseCommand extends Command {
 
+    private Messages messages = new Messages();
     private ShapeRepository repository;
     private int figureNumber;
 
@@ -21,11 +22,11 @@ public class EraseCommand extends Command {
         int index = figureNumber - 1;
 
         if (index < 0 || index >= repository.getAll().size()) {
-            return Messages.NO_FIGURE_WITH_NUMBER + figureNumber + "!";
+            return messages.NO_FIGURE_WITH_NUMBER + figureNumber + "!";
         }
 
         Shape removed = repository.remove(index);
-        String shapeName = removed.toString().split(" ")[0];
-        return Messages.SHAPE_ERASED_SUCCESSFULLY + shapeName + " (" + figureNumber + ")";
+        String shapeName = removed.getClass().getSimpleName();
+        return messages.SHAPE_ERASED_SUCCESSFULLY + shapeName + " (" + figureNumber + ")";
     }
 }

@@ -1,12 +1,13 @@
-package Core.Commands.implementation.edit;
+package Commands.implementation.edit;
 
-import Core.Commands.base.Command;
+import Commands.base.Command;
 import Core.ShapeRepository;
-import Core.Messages;
+import constants.Messages;
 import Models.Shape;
 
 public class CreateCommand extends Command {
 
+    private Messages messages = new Messages();
     private ShapeRepository repository;
     private Shape shape;
 
@@ -22,6 +23,6 @@ public class CreateCommand extends Command {
         String type = shape.getClass().getSimpleName().toLowerCase();
         int total = repository.getAll().size();
         
-        return Messages.SHAPE_CREATED_SUCCESSFULLY + type + " (" + total + ")";
+        return messages.SHAPE_CREATED_SUCCESSFULLY + type + " (" + total + ")";
     }
 }

@@ -1,14 +1,15 @@
-package Core.Commands.implementation.saveAs;
+package Commands.implementation.saveAs;
 
-import Core.Commands.base.Command;
+import Commands.base.Command;
 import Core.ShapeRepository;
-import Core.Messages;
+import constants.Messages;
 import java.io.File;
 
 public class SaveAsCommand extends Command {
 
     private ShapeRepository repository;
     private String newFilePath;
+    private Messages messages = new Messages();
 
     public SaveAsCommand(ShapeRepository repository, String newFilePath) {
         this.repository = repository;
@@ -18,7 +19,7 @@ public class SaveAsCommand extends Command {
     @Override
     public String execute() {
         if (!repository.isFileOpened()) {
-            return Messages.NO_FILE_OPENED_MESSAGE;
+            return messages.NO_FILE_OPENED_MESSAGE;
         }
 
         String fileName = new File(newFilePath).getName();
@@ -27,9 +28,9 @@ public class SaveAsCommand extends Command {
             String svgContent = repository.getSvgService().serialize(repository);
             repository.getFileService().writeFile(newFilePath, svgContent);
             repository.setCurrentFilePath(newFilePath);
-            return Messages.FILE_SAVED_SUCCESSFULLY + fileName;
+            return messages.FILE_SAVED_SUCCESSFULLY + fileName;
         } catch (Exception e) {
-            return Messages.FILE_SAVE_ERROR + e.getMessage();
+            return messages.FILE_SAVE_ERROR + e.getMessage();
         }
     }
 }

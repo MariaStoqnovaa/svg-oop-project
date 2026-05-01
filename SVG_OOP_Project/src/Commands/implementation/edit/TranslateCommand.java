@@ -1,14 +1,15 @@
-package Core.Commands.implementation.edit;
+package Commands.implementation.edit;
 
-import Core.Commands.base.Command;
+import Commands.base.Command;
 import Core.ShapeRepository;
-import Core.Messages;
+import constants.Messages;
 import Models.Shape;
 import java.util.List;
 
 
 public class TranslateCommand extends Command {
 
+    private Messages messages = new Messages();
     private ShapeRepository repository;
     private double horizontal;
     private double vertical;
@@ -28,15 +29,15 @@ public class TranslateCommand extends Command {
         if (figureNumber > 0) {
             int index = figureNumber - 1;
             if (index < 0 || index >= shapes.size()) {
-                return Messages.NO_FIGURE_WITH_NUMBER + figureNumber + "!";
+                return messages.NO_FIGURE_WITH_NUMBER + figureNumber + "!";
             }
             shapes.get(index).translate(horizontal, vertical);
-            return Messages.TRANSLATED_FIGURE + figureNumber;
+            return messages.TRANSLATED_FIGURE + figureNumber;
         } else {
             for (Shape shape : shapes) {
                 shape.translate(horizontal, vertical);
             }
-            return Messages.TRANSLATED_ALL_FIGURES;
+            return messages.TRANSLATED_ALL_FIGURES;
         }
     }
 }

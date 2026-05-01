@@ -1,12 +1,13 @@
-package Core.Commands.implementation.edit;
+package Commands.implementation.edit;
 
-import Core.Commands.base.Command;
+import Commands.base.Command;
 import Core.ShapeRepository;
-import Core.Messages;
+import constants.Messages;
 import Models.Shape;
 
 public class WithinCommand extends Command {
 
+    private Messages messages = new Messages();
     private ShapeRepository repository;
     private Shape region;
 
@@ -18,17 +19,17 @@ public class WithinCommand extends Command {
     @Override
     public String execute() {
         StringBuilder result = new StringBuilder();
-        
+        int count = 1;
+
         for (Shape shape : repository.getAll()) {
             if (shape.isInRegion(region)) {
-                result.append(shape.toString()).append("\n");
+                result.append(count).append(". ").append(shape.toString()).append("\n");
+                count++;
             }
         }
 
-        String regionType = region.getClass().getSimpleName().toLowerCase();
-
         if (result.length() == 0) {
-            return Messages.NO_SHAPES_IN_REGION + regionType;
+            return messages.NO_SHAPES_IN_REGION + region.toString();
         }
 
         result.setLength(result.length() - 1);
