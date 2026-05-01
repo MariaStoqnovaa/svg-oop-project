@@ -1,69 +1,183 @@
 package Core;
 
-import Models.Shape;
 import Models.Circle;
 import Models.Rectangle;
 import Models.Line;
+import Models.Shape;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.lang.Double.parseDouble;
+
 public class SvgService {
+
 
     public void parse(String fileContent, IShapeRepository repo) {
         repo.clear();
-        parseRectangles(fileContent, repo);
-        parseCircles(fileContent, repo);
-        parseLines(fileContent, repo);
+        findAllShapes(fileContent, repo);
     }
 
-    private void parseRectangles(String content, IShapeRepository repo) {
-        String pattern = "<rect x=\"([^\"]+)\" y=\"([^\"]+)\" width=\"([^\"]+)\" height=\"([^\"]+)\" fill=\"([^\"]+)\"";
-        Matcher m = Pattern.compile(pattern).matcher(content);
-        while (m.find()) {
-            double x      = Double.parseDouble(m.group(1));
-            double y      = Double.parseDouble(m.group(2));
-            double width  = Double.parseDouble(m.group(3));
-            double height = Double.parseDouble(m.group(4));
-            String fill   = m.group(5);
-            repo.addShape(new Rectangle(x, y, width, height, fill));
+    private String getValue(String tag, String attribute) {
+        String key = attribute + "=\"";
+        int start = tag.indexOf(key);
+
+        if (start == -1) {
+            return "";
+        }
+
+        start += key.length();
+        int end = tag.indexOf("\"", start);
+
+        if (end == -1) {
+            return "";
+        }
+
+        return tag.substring(start, end);
+    }
+
+    private double getDoubleValue(String tag, String attribute) {
+        return Double.parseDouble(getValue(tag, attribute));
+    }
+
+    private void findAllShapes(String svgText, IShapeRepository repo) {
+        int position = 0;
+
+        while (true) {
+            int rectStart = svgText.indexOf("<rect", position);
+            int circleStart = svgText.indexOf("<circle", position);
+            int lineStart = svgText.indexOf("<line", position);
+
+            int start = -1;
+            String tagName = null;
+
+            if (rectStart != -1 && (start == -1 || rectStart < start)) {
+                start = rectStart;
+                tagName = "rect";
+            }
+
+            if (circleStart != -1 && (start == -1 || circleStart < start)) {
+                start = circleStart;
+                tagName = "circle";
+            }
+
+            if (lineStart != -1 && (start == -1 || lineStart < start)) {
+                start = lineStart;
+                tagName = "line";
+            }
+
+            if (start == -1) {
+                break;
+            }
+
+            int end = svgText.indexOf(">", start);
+            if (end == -1) {
+                break;
+            }
+
+            String tag = svgText.substring(start, end + 1);
+            position = end + 1;
+
+            if (tagName.equals("rect")) {
+                double x = getDoubleValue(tag, "x");
+                double y = getDoubleValue(tag, "y");
+                double width = getDoubleValue(tag, "width");
+                double height = getDoubleValue(tag, "height");
+                String color = getValue(tag, "fill");
+
+                repo.addShape(new Rectangle(x, y, width, height, color));
+            } else if (tagName.equals("circle")) {
+                double cx = getDoubleValue(tag, "cx");
+                double cy = getDoubleValue(tag, "cy");
+                double r = getDoubleValue(tag, "r");
+                String color = getValue(tag, "fill");
+
+                repo.addShape(new Circle(cx, cy, r, color));
+            } else if (tagName.equals("line")) {
+                double x1 = getDoubleValue(tag, "x1");
+                double y1 = getDoubleValue(tag, "y1");
+                double x2 = getDoubleValue(tag, "x2");
+                double y2 = getDoubleValue(tag, "y2");
+                String color = getValue(tag, "stroke");
+
+                repo.addShape(new Line(x1, y1, x2, y2, color));
+            }
         }
     }
-
-    private void parseCircles(String content, IShapeRepository repo) {
-        String pattern = "<circle cx=\"([^\"]+)\" cy=\"([^\"]+)\" r=\"([^\"]+)\" fill=\"([^\"]+)\"";
-        Matcher m = Pattern.compile(pattern).matcher(content);
-        while (m.find()) {
-            double cx   = Double.parseDouble(m.group(1));
-            double cy   = Double.parseDouble(m.group(2));
-            double r    = Double.parseDouble(m.group(3));
-            String fill = m.group(4);
-            repo.addShape(new Circle(cx, cy, r, fill));
-        }
-    }
-
-    private void parseLines(String content, IShapeRepository repo) {
-        String pattern = "<line x1=\"([^\"]+)\" y1=\"([^\"]+)\" x2=\"([^\"]+)\" y2=\"([^\"]+)\" stroke=\"([^\"]+)\"";
-        Matcher m = Pattern.compile(pattern).matcher(content);
-        while (m.find()) {
-            double x1     = Double.parseDouble(m.group(1));
-            double y1     = Double.parseDouble(m.group(2));
-            double x2     = Double.parseDouble(m.group(3));
-            double y2     = Double.parseDouble(m.group(4));
-            String stroke = m.group(5);
-            repo.addShape(new Line(x1, y1, x2, y2, stroke));
-        }
-    }
-
     public String serialize(IShapeRepository repo) {
         StringBuilder svgContent = new StringBuilder();
+
         svgContent.append("<?xml version=\"1.0\" standalone=\"no\"?>\n");
+        svgContent.append("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\"\n");
+        svgContent.append("        \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n");
         svgContent.append("<svg>\n");
 
         for (Shape shape : repo.getAll()) {
-            svgContent.append("  ").append(shape.toSVG()).append("\n");
+            svgContent.append("    ").append(shape.toSVG()).append("\n");
         }
 
         svgContent.append("</svg>");
         return svgContent.toString();
     }
+//    public void parse(String fileContent, IShapeRepository repo) {
+//        repo.clear();
+//        findAllShapes(fileContent, repo);
+//    }
+//
+//    private String getValue(String tag, String attribute) {
+//        String key = attribute + "=\"";
+//        int start = tag.indexOf(key) + key.length();
+//        int end = tag.indexOf("\"", start);
+//        return tag.substring(start, end);
+//    }
+//
+//    private double getDoubleValue(String tag, String attribute) {
+//        return Double.parseDouble(getValue(tag, attribute));
+//    }
+//
+//    private void findAllShapes(String svgText, IShapeRepository repo) {
+//        Pattern pattern = Pattern.compile("<(rect|circle|line)(\\s[^>]*)>");
+//        Matcher matcher = pattern.matcher(svgText);
+//
+//        while (matcher.find()) {
+//            String tagName = matcher.group(1);
+//            String tag = matcher.group(0);
+//
+//            if (tagName.equals("rect")) {
+//                double x = getDoubleValue(tag, "x");
+//                double y = getDoubleValue(tag, "y");
+//                double width = getDoubleValue(tag, "width");
+//                double height = getDoubleValue(tag, "height");
+//                String color = getValue(tag, "fill");
+//                repo.addShape(new Rectangle(x, y, width, height, color));
+//            } else if (tagName.equals("circle")) {
+//                double cx = getDoubleValue(tag, "cx");
+//                double cy = getDoubleValue(tag, "cy");
+//                double r = getDoubleValue(tag, "r");
+//                String color = getValue(tag, "fill");
+//                repo.addShape(new Circle(cx, cy, r, color));
+//            } else if (tagName.equals("line")) {
+//                double x1 = getDoubleValue(tag, "x1");
+//                double y1 = getDoubleValue(tag, "y1");
+//                double x2 = getDoubleValue(tag, "x2");
+//                double y2 = getDoubleValue(tag, "y2");
+//                String color = getValue(tag, "stroke");
+//                repo.addShape(new Line(x1, y1, x2, y2, color));
+//            }
+//        }
+//    }
+//
+//    public String serialize(IShapeRepository repo) {
+//        StringBuilder svgContent = new StringBuilder();
+//        svgContent.append("<?xml version=\"1.0\" standalone=\"no\"?>\n");
+//        svgContent.append("<svg>\n");
+//
+//        for (Shape shape : repo.getAll()) {
+//            svgContent.append("  ").append(shape.toSVG()).append("\n");
+//        }
+//
+//        svgContent.append("</svg>");
+//        return svgContent.toString();
+//    }
+//
 }

@@ -1,4 +1,4 @@
-package Core.Commands.base;
+package Commands.base;
 
 public enum Commands
 {
@@ -11,7 +11,7 @@ public enum Commands
     HELP("help"),
     EXIT("exit");
 
-    private final String value;
+    private String value;
 
     Commands(String value) {
         this.value = value;

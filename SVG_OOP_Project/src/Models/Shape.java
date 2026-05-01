@@ -5,7 +5,7 @@ public abstract class Shape {
     protected Point position;
 
     public Shape(double x, double y) {
-        this.position = new Point(x, y);
+        this.position = new Point(Math.abs(x), Math.abs(y));
     }
 
     public double getX() {
@@ -25,4 +25,18 @@ public abstract class Shape {
     public abstract String toSVG();
 
     public abstract String toString();
+
+    protected static String formatDisplayNumber(double value) {
+        if (value == (int) value) {
+            return String.valueOf((int) value);
+        }
+        return String.valueOf(value);
+    }
+
+    protected static String formatSVGNumber(double value) {
+        if (value == (int) value) {
+            return String.valueOf((int) value);
+        }
+        return String.valueOf(value);
+    }
 }

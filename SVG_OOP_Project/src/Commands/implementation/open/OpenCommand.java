@@ -1,17 +1,15 @@
-package Core.Commands.implementation.open;
+package Commands.implementation.open;
 
-import Core.Commands.base.Command;
+import Commands.base.Command;
 import Core.ShapeRepository;
-import Core.FileService;
-import Core.SvgService;
-import Core.IShapeRepository;
-import Core.Messages;
+import constants.Messages;
 import java.io.File;
 
 public class OpenCommand extends Command {
 
     private ShapeRepository repository;
     private String filePath;
+    private Messages messages = new Messages();
 
     public OpenCommand(ShapeRepository repository, String filePath) {
         this.repository = repository;
@@ -30,9 +28,9 @@ public class OpenCommand extends Command {
                 repository.getSvgService().parse(content, repository);
             }
 
-            return Messages.FILE_OPENED_SUCCESSFULLY + fileName;
+            return messages.FILE_OPENED_SUCCESSFULLY + fileName;
         } catch (Exception e) {
-            return "fatal:" + Messages.FILE_LOAD_ERROR + e.getMessage();
+            return "fatal:" + messages.FILE_LOAD_ERROR + e.getMessage();
         }
     }
 }

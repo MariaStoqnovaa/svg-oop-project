@@ -6,7 +6,7 @@ public class Line extends Shape {
     private String stroke;
 
     public Line(double x1, double y1, double x2, double y2, String stroke) {
-        super(x1, y1);
+        super(Math.abs(x1), Math.abs(y1));
         this.endPoint = new Point(x2, y2);
         this.stroke = stroke;
     }
@@ -33,24 +33,15 @@ public class Line extends Shape {
     public boolean isInRegion(Shape region) {
         if (region instanceof Rectangle) {
             Rectangle rect = (Rectangle) region;
-
-            boolean startInside = getX() >= rect.getX()
-                    && getX() <= rect.getX() + rect.getWidth()
-                    && getY() >= rect.getY()
-                    && getY() <= rect.getY() + rect.getHeight();
-
-            boolean endInside = getX2() >= rect.getX()
-                    && getX2() <= rect.getX() + rect.getWidth()
-                    && getY2() >= rect.getY()
-                    && getY2() <= rect.getY() + rect.getHeight();
-
-            return startInside && endInside;
+            return getX() >= rect.getX() && getX() <= rect.getX() + rect.getWidth()
+                    && getY() >= rect.getY() && getY() <= rect.getY() + rect.getHeight();
         }
 
         if (region instanceof Circle) {
             Circle circ = (Circle) region;
-            return pointInCircle(getX(), getY(), circ)
-                && pointInCircle(getX2(), getY2(), circ);
+            double dx = getX() - circ.getX();
+            double dy = getY() - circ.getY();
+            return Math.sqrt(dx * dx + dy * dy) <= circ.getRadius();
         }
 
         return false;
@@ -65,12 +56,11 @@ public class Line extends Shape {
 
     @Override
     public String toSVG() {
-        return String.format("<line x1=\"%.1f\" y1=\"%.1f\" x2=\"%.1f\" y2=\"%.1f\" stroke=\"%s\" />",
-                getX(), getY(), getX2(), getY2(), stroke);
+        return "<line x1=\"" + formatSVGNumber(getX()) + "\" y1=\"" + formatSVGNumber(getY()) + "\" x2=\"" + formatSVGNumber(getX2()) + "\" y2=\"" + formatSVGNumber(getY2()) + "\" stroke=\"" + stroke + "\" />";
     }
 
     @Override
     public String toString() {
-        return String.format("line %.1f %.1f %.1f %.1f %s", getX(), getY(), getX2(), getY2(), stroke);
+        return "line " + formatDisplayNumber(getX()) + " " + formatDisplayNumber(getY()) + " " + formatDisplayNumber(getX2()) + " " + formatDisplayNumber(getY2()) + " " + stroke;
     }
 }

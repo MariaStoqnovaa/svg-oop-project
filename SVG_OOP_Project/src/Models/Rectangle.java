@@ -4,10 +4,10 @@ public class Rectangle extends Shape {
 
     private double width;
     private double height;
-    private String fill; // color
+    private String fill;
 
     public Rectangle(double x, double y, double width, double height, String fill) {
-        super(x, y);
+        super(Math.abs(x), Math.abs(y));
         this.width = width;
         this.height = height;
         this.fill = fill;
@@ -32,20 +32,15 @@ public class Rectangle extends Shape {
     public boolean isInRegion(Shape region) {
         if (region instanceof Rectangle) {
             Rectangle rect = (Rectangle) region;
-            boolean leftOk  = getX() >= rect.getX();
-            boolean topOk   = getY() >= rect.getY();
-            boolean rightOk = (getX() + width)  <= (rect.getX() + rect.getWidth());
-            boolean botOk   = (getY() + height) <= (rect.getY() + rect.getHeight());
-            return leftOk && topOk && rightOk && botOk;
+            return getX() >= rect.getX() && getX() <= rect.getX() + rect.getWidth()
+                && getY() >= rect.getY() && getY() <= rect.getY() + rect.getHeight();
         }
 
         if (region instanceof Circle) {
             Circle circ = (Circle) region;
-
-            return pointInCircle(getX(),         getY(),          circ)
-                && pointInCircle(getX() + width, getY(),          circ)
-                && pointInCircle(getX(),         getY() + height, circ)
-                && pointInCircle(getX() + width, getY() + height, circ);
+            double dx = getX() - circ.getX();
+            double dy = getY() - circ.getY();
+            return Math.sqrt(dx * dx + dy * dy) <= circ.getRadius();
         }
 
         return false;
@@ -59,12 +54,11 @@ public class Rectangle extends Shape {
 
     @Override
     public String toSVG() {
-        return String.format("<rect x=\"%.1f\" y=\"%.1f\" width=\"%.1f\" height=\"%.1f\" fill=\"%s\" />",
-                getX(), getY(), width, height, fill);
+        return "<rect x=\"" + formatSVGNumber(getX()) + "\" y=\"" + formatSVGNumber(getY()) + "\" width=\"" + formatSVGNumber(width) + "\" height=\"" + formatSVGNumber(height) + "\" fill=\"" + fill + "\" />";
     }
 
     @Override
     public String toString() {
-        return String.format("rectangle %.1f %.1f %.1f %.1f %s", getX(), getY(), width, height, fill);
+        return "rectangle " + formatDisplayNumber(getX()) + " " + formatDisplayNumber(getY()) + " " + formatDisplayNumber(width) + " " + formatDisplayNumber(height) + " " + fill;
     }
 }

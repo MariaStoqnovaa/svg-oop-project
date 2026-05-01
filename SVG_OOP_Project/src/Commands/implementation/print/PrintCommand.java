@@ -1,13 +1,14 @@
-package Core.Commands.implementation.print;
+package Commands.implementation.print;
 
-import Core.Commands.base.Command;
+import Commands.base.Command;
 import Core.ShapeRepository;
-import Core.Messages;
+import constants.Messages;
 import Models.Shape;
 import java.util.List;
 
 public class PrintCommand extends Command {
 
+    private Messages messages = new Messages();
     private ShapeRepository repository;
 
     public PrintCommand(ShapeRepository repository) {
@@ -19,7 +20,7 @@ public class PrintCommand extends Command {
         List<Shape> shapes = repository.getAll();
 
         if (shapes.isEmpty()) {
-            return Messages.NO_SHAPES_LOADED;
+            return messages.NO_SHAPES_LOADED;
         }
 
         StringBuilder result = new StringBuilder();
