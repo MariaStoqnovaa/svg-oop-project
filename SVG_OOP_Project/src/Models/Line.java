@@ -6,7 +6,8 @@ public class Line extends Shape {
     private String stroke;
 
     public Line(double x1, double y1, double x2, double y2, String stroke) {
-        super(Math.abs(x1), Math.abs(y1));
+        //super(Math.abs(x1), Math.abs(y1));
+        super(x1, y1);
         this.endPoint = new Point(x2, y2);
         this.stroke = stroke;
     }
@@ -31,27 +32,32 @@ public class Line extends Shape {
 
     @Override
     public boolean isInRegion(Shape region) {
-        if (region instanceof Rectangle) {
-            Rectangle rect = (Rectangle) region;
-            return getX() >= rect.getX() && getX() <= rect.getX() + rect.getWidth()
-                    && getY() >= rect.getY() && getY() <= rect.getY() + rect.getHeight();
+        if (region instanceof Rectangle r) {
+            // Both endpoints must lie inside the rectangle.
+            // (A line segment is convex, so if both endpoints are inside
+            // a convex region, the whole segment is inside.)
+            return pointInRectangle(getX(),  getY(),  r)
+                    && pointInRectangle(getX2(), getY2(), r);
         }
 
-        if (region instanceof Circle) {
-            Circle circ = (Circle) region;
-            double dx = getX() - circ.getX();
-            double dy = getY() - circ.getY();
-            return Math.sqrt(dx * dx + dy * dy) <= circ.getRadius();
+        if (region instanceof Circle c) {
+            double r2 = c.getRadius() * c.getRadius();
+            return pointInCircle(getX(),  getY(),  c, r2)
+                    && pointInCircle(getX2(), getY2(), c, r2);
         }
 
         return false;
     }
 
+    private boolean pointInRectangle(double px, double py, Rectangle r) {
+        return px >= r.getX() && px <= r.getX() + r.getWidth()
+                && py >= r.getY() && py <= r.getY() + r.getHeight();
+    }
 
-    private boolean pointInCircle(double px, double py, Circle c) {
+    private boolean pointInCircle(double px, double py, Circle c, double r2) {
         double dx = px - c.getX();
         double dy = py - c.getY();
-        return dx * dx + dy * dy <= c.getRadius() * c.getRadius();
+        return dx * dx + dy * dy <= r2;
     }
 
     @Override

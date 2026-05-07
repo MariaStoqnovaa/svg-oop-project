@@ -6,7 +6,8 @@ public class Circle extends Shape {
     private String fill;
 
     public Circle(double x, double y, double radius, String fill) {
-        super(Math.abs(x), Math.abs(y));
+        //super(Math.abs(x), Math.abs(y));
+        super(x, y);
         if (radius < 0) {
             throw new IllegalArgumentException("Radius cannot be negative!");
         }
@@ -24,20 +25,25 @@ public class Circle extends Shape {
 
     @Override
     public boolean isInRegion(Shape region) {
-        if (region instanceof Rectangle) {
-            Rectangle rect = (Rectangle) region;
-            return getX() >= rect.getX() && getX() <= rect.getX() + rect.getWidth()
-                && getY() >= rect.getY() && getY() <= rect.getY() + rect.getHeight();
+        if (region instanceof Rectangle r ) {
+            // The bounding box of this circle must fit inside the rectangle
+            return getX() - radius >= r.getX()
+                    && getX() + radius <= r.getX() + r.getWidth()
+                    && getY() - radius >= r.getY()
+                    && getY() + radius <= r.getY() + r.getHeight();
         }
 
-        if (region instanceof Circle) {
-            Circle other = (Circle) region;
+        if (region instanceof Circle other) {
             double dx = getX() - other.getX();
             double dy = getY() - other.getY();
-            return Math.sqrt(dx * dx + dy * dy) <= other.getRadius();
+            double centerDist = Math.sqrt(dx * dx + dy * dy);
+            // This circle fits inside the other if the distance between centers
+            // plus this radius doesn't exceed the other radius
+            return centerDist + radius <= other.getRadius();
         }
 
         return false;
+
     }
 
     @Override

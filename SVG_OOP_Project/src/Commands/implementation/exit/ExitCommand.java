@@ -6,6 +6,6 @@ public class ExitCommand extends Command {
 
     @Override
     public String execute() {
-        return "eхit";
+        return "exit";
     }
 }

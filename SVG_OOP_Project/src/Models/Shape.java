@@ -5,7 +5,8 @@ public abstract class Shape {
     protected Point position;
 
     public Shape(double x, double y) {
-        this.position = new Point(Math.abs(x), Math.abs(y));
+        //this.position = new Point(Math.abs(x), Math.abs(y));
+        this.position = new Point(x, y);
     }
 
     public double getX() {
