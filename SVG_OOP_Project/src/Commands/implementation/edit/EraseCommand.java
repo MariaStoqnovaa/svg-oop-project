@@ -26,7 +26,7 @@ public class EraseCommand extends Command {
         }
 
         Shape removed = repository.remove(index);
-        String shapeName = removed.getClass().getSimpleName();
+        String shapeName = removed.getClass().getSimpleName().toLowerCase();
         return messages.SHAPE_ERASED_SUCCESSFULLY + shapeName + " (" + figureNumber + ")";
     }
 }

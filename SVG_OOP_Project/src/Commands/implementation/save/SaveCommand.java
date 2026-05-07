@@ -22,15 +22,20 @@ public class SaveCommand extends Command {
         }
 
         try {
-            StringBuilder svgContent = new StringBuilder();
-            svgContent.append("<?xml version=\"1.0\" standalone=\"no\"?>\n");
-            svgContent.append("<svg>\n");
-            for (Shape shape : repository.getAll()) {
-                svgContent.append("  ").append(shape.toSVG()).append("\n");
-            }
-            svgContent.append("</svg>");
-            repository.getFileService().writeFile(repository.getCurrentFilePath(), svgContent.toString());
+            String svgContent = repository.getSvgService().serialize(repository);
+            repository.getFileService().writeFile(repository.getCurrentFilePath(), svgContent);
             return messages.FILE_SAVED_SUCCESSFULLY + repository.getCurrentFileName();
+
+//            StringBuilder svgContent = new StringBuilder();
+//            svgContent.append("<?xml version=\"1.0\" standalone=\"no\"?>\n");
+//            svgContent.append("<svg>\n");
+//            for (Shape shape : repository.getAll()) {
+//                svgContent.append("  ").append(shape.toSVG()).append("\n");
+//            }
+//            svgContent.append("</svg>");
+//            repository.getFileService().writeFile(repository.getCurrentFilePath(), svgContent.toString());
+//            return messages.FILE_SAVED_SUCCESSFULLY + repository.getCurrentFileName();
+//
         } catch (Exception e) {
             return messages.FILE_SAVE_ERROR + e.getMessage();
         }

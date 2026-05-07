@@ -22,6 +22,7 @@ public class Controller {
 
     public String execute(String input) {
         String[] parts = input.trim().split("\\s+");
+        //String parts = input.trim();
 
         if (parts.length == 0 || parts[0].isEmpty()) {
             return "";
@@ -30,7 +31,8 @@ public class Controller {
         String command = parts[0].toLowerCase();
 
         if (command.equals("open")) {
-            if (parts.length < 2) return "Please provide a filename.";
+            if (parts.length < 2)
+                return "Please provide a filename.";
             return new OpenCommand(repository, parts[1]).execute();
         }
 

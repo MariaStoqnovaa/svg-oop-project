@@ -7,7 +7,8 @@ public class Rectangle extends Shape {
     private String fill;
 
     public Rectangle(double x, double y, double width, double height, String fill) {
-        super(Math.abs(x), Math.abs(y));
+        //super(Math.abs(x), Math.abs(y));
+        super(x, y);
         this.width = width;
         this.height = height;
         this.fill = fill;
@@ -29,28 +30,42 @@ public class Rectangle extends Shape {
     public double getB() { return height; }
 
     @Override
-    public boolean isInRegion(Shape region) {
-        if (region instanceof Rectangle) {
-            Rectangle rect = (Rectangle) region;
-            return getX() >= rect.getX() && getX() <= rect.getX() + rect.getWidth()
-                && getY() >= rect.getY() && getY() <= rect.getY() + rect.getHeight();
-        }
+    public boolean isInRegion(Shape region)
+    {
+        double left   = getX();
+        double top    = getY();
+        double right  = getX() + width;
+        double bottom = getY() + height;
 
-        if (region instanceof Circle) {
-            Circle circ = (Circle) region;
-            double dx = getX() - circ.getX();
-            double dy = getY() - circ.getY();
-            return Math.sqrt(dx * dx + dy * dy) <= circ.getRadius();
+        if (region instanceof Rectangle r) {
+            return left   >= r.getX()
+                    && right  <= r.getX() + r.getWidth()
+                    && top    >= r.getY()
+                    && bottom <= r.getY() + r.getHeight();
+        }
+        if (region instanceof Circle c) {
+            // All four corners must be inside the circle.
+            // Use squared distance to avoid sqrt.
+            double r2 = c.getRadius() * c.getRadius();
+            return cornerInCircle(left,  top,    c, r2)
+                    && cornerInCircle(right, top,    c, r2)
+                    && cornerInCircle(left,  bottom, c, r2)
+                    && cornerInCircle(right, bottom, c, r2);
         }
 
         return false;
     }
 
-    private boolean pointInCircle(double px, double py, Circle c) {
+    private boolean cornerInCircle(double px, double py, Circle c, double r2) {
         double dx = px - c.getX();
         double dy = py - c.getY();
-        return dx * dx + dy * dy <= c.getRadius() * c.getRadius();
+        return dx * dx + dy * dy <= r2;
     }
+//    private boolean pointInCircle(double px, double py, Circle c) {
+//        double dx = px - c.getX();
+//        double dy = py - c.getY();
+//        return dx * dx + dy * dy <= c.getRadius() * c.getRadius();
+//    }
 
     @Override
     public String toSVG() {
