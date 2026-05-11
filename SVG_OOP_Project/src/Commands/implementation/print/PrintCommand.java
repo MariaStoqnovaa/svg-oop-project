@@ -19,12 +19,14 @@ public class PrintCommand extends Command {
     public String execute() {
         List<Shape> shapes = repository.getAll();
 
-        if (shapes.isEmpty()) {
+        if (shapes.isEmpty())
+        {
             return messages.NO_SHAPES_LOADED;
         }
 
         StringBuilder result = new StringBuilder();
-        for (int i = 0; i < shapes.size(); i++) {
+        for (int i = 0; i < shapes.size(); i++)
+        {
             result.append(i + 1).append(". ").append(shapes.get(i).toString()).append("\n");
         }
 
