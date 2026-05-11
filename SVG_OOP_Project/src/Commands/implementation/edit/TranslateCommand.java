@@ -28,7 +28,8 @@ public class TranslateCommand extends Command {
 
         if (figureNumber > 0) {
             int index = figureNumber - 1;
-            if (index < 0 || index >= shapes.size()) {
+            if (index < 0 || index >= shapes.size())
+            {
                 return messages.NO_FIGURE_WITH_NUMBER + figureNumber + "!";
             }
             shapes.get(index).translate(horizontal, vertical);
