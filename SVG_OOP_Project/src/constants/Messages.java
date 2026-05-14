@@ -1,5 +1,12 @@
 package constants;
 
+/**
+ * Stores reusable user-facing messages returned by commands and services.
+ *
+ * <p>This class centralizes common text constants such as success messages,
+ * error messages, and hints shown to the user.</p>
+ */
+
 public class Messages {
 
     public String NO_FILE_OPENED_MESSAGE = "No file is currently open.";

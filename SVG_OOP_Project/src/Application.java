@@ -1,7 +1,25 @@
 import Core.Controller;
 import java.util.Scanner;
 
+/**
+ * Entry point of the SVG console application.
+ *
+ * <p>This class starts the read-eval-print loop, reads commands from standard
+ * input, delegates command processing to {@link Core.Controller}, and prints
+ * the returned result to the console.</p>
+ */
+
 public class Application {
+
+    /**
+     * Starts the console application.
+     *
+     * <p>The method continuously reads user input, passes each command line to
+     * the controller, prints the command result, and stops when the controller
+     * returns the special exit marker or a fatal error.</p>
+     *
+     * @param args command-line arguments, currently unused
+     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Controller controller = new Controller();

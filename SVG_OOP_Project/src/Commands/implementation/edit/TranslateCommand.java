@@ -6,7 +6,9 @@ import constants.Messages;
 import Models.Shape;
 import java.util.List;
 
-
+/**
+ * Command that translates one shape or all stored shapes by the given offsets.
+ */
 public class TranslateCommand extends Command {
 
     private Messages messages = new Messages();
@@ -14,14 +16,25 @@ public class TranslateCommand extends Command {
     private double horizontal;
     private double vertical;
     private int figureNumber;
-
+    /**
+     * Creates a translate command.
+     *
+     * @param repository active shape repository
+     * @param horizontal horizontal movement amount
+     * @param vertical vertical movement amount
+     * @param figureNumber one-based shape number, or {@code 0} for all shapes
+     */
     public TranslateCommand(ShapeRepository repository, double horizontal, double vertical, int figureNumber) {
         this.repository = repository;
         this.horizontal = horizontal;
         this.vertical = vertical;
         this.figureNumber = figureNumber;
     }
-
+    /**
+     * Translates the selected shape or all shapes.
+     *
+     * @return success or error message
+     */
     @Override
     public String execute() {
         List<Shape> shapes = repository.getAll();

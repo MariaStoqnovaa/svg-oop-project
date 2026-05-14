@@ -9,9 +9,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.Double.parseDouble;
-
+/**
+ * Converts between SVG text and the internal shape model.
+ *
+ * <p>This service parses supported SVG elements into shape objects and can also
+ * serialize the current repository content back to SVG text.</p>
+ */
 public class SvgService {
-
+    /**
+     * Parses SVG text and loads all supported shapes into the repository.
+     *
+     * @param fileContent raw SVG text
+     * @param repo repository that will receive the parsed shapes
+     */
 
     public void parse(String fileContent, IShapeRepository repo) {
         repo.clear();
@@ -112,6 +122,13 @@ public class SvgService {
             }
         }
     }
+
+    /**
+     * Serializes all shapes from the repository into SVG text.
+     *
+     * @param repo repository containing the shapes to serialize
+     * @return SVG document text built from the stored shapes
+     */
     public String serialize(IShapeRepository repo) {
         StringBuilder svgContent = new StringBuilder();
 

@@ -5,7 +5,22 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
+/**
+ * Provides basic text file input and output operations for the project.
+ *
+ * <p>This class is used to read SVG or text content from disk and to write the
+ * generated SVG content back to a file.</p>
+ */
+
 public class FileService {
+
+    /**
+     * Reads the full content of a text file.
+     *
+     * @param filePath path to the file to read
+     * @return the file content, or an empty string if the file does not exist
+     * @throws IOException if the file exists but cannot be read
+     */
 
     /**
      * Reads the entire content of the given text file.
@@ -33,6 +48,14 @@ public class FileService {
         scanner.close();
         return content.toString();
     }
+    
+    /**
+     * Writes text content to a file, replacing any existing content.
+     *
+     * @param filePath path to the destination file
+     * @param content text to write
+     * @throws IOException if the file cannot be written
+     */
 
     /**
      * Writes the given content to the file at {@code filePath},
