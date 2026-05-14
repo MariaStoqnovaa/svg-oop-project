@@ -1,8 +1,16 @@
 package Commands.implementation.help;
 
 import Commands.base.Command;
-public class HelpCommand extends Command {
 
+/**
+ * Command that returns help information about the supported console commands.
+ */
+public class HelpCommand extends Command {
+    /**
+     * Returns a formatted list of supported commands.
+     *
+     * @return help text
+     */
     @Override
     public String execute() {
         return "The following commands are supported:\n"

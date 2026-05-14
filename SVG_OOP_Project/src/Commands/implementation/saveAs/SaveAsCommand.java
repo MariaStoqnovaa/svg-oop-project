@@ -4,18 +4,30 @@ import Commands.base.Command;
 import Core.ShapeRepository;
 import constants.Messages;
 import java.io.File;
-
+/**
+ * Command that saves the current repository content to a new file path.
+ */
 public class SaveAsCommand extends Command {
 
     private ShapeRepository repository;
     private String newFilePath;
     private Messages messages = new Messages();
-
+    /**
+     * Creates a save-as command.
+     *
+     * @param repository active shape repository
+     * @param newFilePath destination file path
+     */
     public SaveAsCommand(ShapeRepository repository, String newFilePath) {
         this.repository = repository;
         this.newFilePath = newFilePath;
     }
-
+    /**
+     * Serializes the current shapes, writes them to the new file, and updates
+     * the repository file path.
+     *
+     * @return success or error message
+     */
     @Override
     public String execute() {
         if (!repository.isFileOpened()) {

@@ -10,15 +10,23 @@ package Models;
  * {@link #toSVG()}, and {@link #toString()}.
  */
 
+
+/**
+ * Abstract base class for all supported SVG shapes.
+ *
+ * <p>Every shape has a position and must be able to translate itself, check
+ * whether it lies in a region, return an SVG representation, and return a
+ * human-readable description.</p>
+ */
+
 public abstract class Shape {
 
     protected Point position;
-
     /**
-     * Creates a shape anchored at the given coordinates.
+     * Creates a shape at the given position.
      *
-     * @param x X coordinate of the anchor point
-     * @param y Y coordinate of the anchor point
+     * @param x x-coordinate of the shape anchor point
+     * @param y y-coordinate of the shape anchor point
      */
     public Shape(double x, double y) {
         //this.position = new Point(Math.abs(x), Math.abs(y));
@@ -26,13 +34,20 @@ public abstract class Shape {
     }
 
 
-    /** @return the X coordinate of the shape's anchor point */
+    /**
+     * Returns the x-coordinate of the shape position.
+     *
+     * @return x-coordinate
+     */
     public double getX() {
         return position.getX();
     }
 
-
-    /** @return the Y coordinate of the shape's anchor point */
+    /**
+     * Returns the y-coordinate of the shape position.
+     *
+     * @return y-coordinate
+     */
     public double getY() {
         return position.getY();
     }
@@ -55,6 +70,9 @@ public abstract class Shape {
      */
     public abstract boolean isInRegion(Shape region);
 
+    public abstract boolean isContainsRec(Rectangle rectangle);
+    public abstract boolean isContainsLine(Line line);
+    public abstract boolean isContainsCircle(Circle circle);
     /**
      * Returns the SVG representation of this shape, e.g.
      * {@code <rect x="5" y="5" width="10" height="10" fill="green" />}.
@@ -71,15 +89,19 @@ public abstract class Shape {
      */
     public abstract String toString();
 
-    protected static String formatDisplayNumber(double value) {
-        if (value == (int) value) {
+    protected static String formatDisplayNumber(double value)
+    {
+        if (value == (int) value)
+        {
             return String.valueOf((int) value);
         }
         return String.valueOf(value);
     }
 
-    protected static String formatSVGNumber(double value) {
-        if (value == (int) value) {
+    protected static String formatSVGNumber(double value)
+    {
+        if (value == (int) value)
+        {
             return String.valueOf((int) value);
         }
         return String.valueOf(value);

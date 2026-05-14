@@ -1,5 +1,7 @@
 package Commands.base;
-
+/**
+ * Enumerates the basic command keywords supported by the application.
+ */
 public enum Commands
 {
     OPEN("open"),
@@ -16,7 +18,11 @@ public enum Commands
     Commands(String value) {
         this.value = value;
     }
-
+    /**
+     * Returns the string value associated with the enum constant.
+     *
+     * @return command keyword value
+     */
     public String getValue() {
         return value;
     }

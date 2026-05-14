@@ -1,5 +1,9 @@
 package Models;
 
+/**
+ * Represents an SVG rectangle defined by position, width, height, and fill
+ * color.
+ */
 
 /**
  * SVG rectangle defined by its top-left anchor point, width, height
@@ -46,11 +50,18 @@ public class Rectangle extends Shape {
         return fill;
     }
 
-    /** @return alias for {@link #getWidth()} (side A of the rectangle) */
+    /** @return alias for the rectangle width */
     public double getA() { return width; }
 
-    /** @return alias for {@link #getHeight()} (side B of the rectangle) */
+    /** @return alias for the rectangle height */
     public double getB() { return height; }
+
+    /**
+     * Checks whether the rectangle lies inside the given region.
+     *
+     * @param region rectangle or circle region
+     * @return {@code true} if the rectangle is fully inside the region
+     */
 
     /**
      * Tests whether this rectangle lies fully within the given region.
@@ -63,51 +74,68 @@ public class Rectangle extends Shape {
     @Override
     public boolean isInRegion(Shape region)
     {
-        double left   = getX();
-        double top    = getY();
-        double right  = getX() + width;
-        double bottom = getY() + height;
-
-        if (region instanceof Rectangle r) {
-            return left   >= r.getX()
-                    && right  <= r.getX() + r.getWidth()
-                    && top    >= r.getY()
-                    && bottom <= r.getY() + r.getHeight();
-        }
-        if (region instanceof Circle c) {
-
-            double r2 = c.getRadius() * c.getRadius();
-            return cornerInCircle(left,  top,    c, r2)
-                    && cornerInCircle(right, top,    c, r2)
-                    && cornerInCircle(left,  bottom, c, r2)
-                    && cornerInCircle(right, bottom, c, r2);
-        }
-
-        return false;
+        return region.isContainsRec(this);
     }
 
-    private boolean cornerInCircle(double px, double py, Circle c, double r2) {
-        double dx = px - c.getX();
-        double dy = py - c.getY();
-        return dx * dx + dy * dy <= r2;
+    @Override
+    public boolean isContainsRec(Rectangle rectangle) {
+        double left = rectangle.getX();
+        double top = rectangle.getY();
+        double right = rectangle.getX() + rectangle.getWidth();
+        double bottom = rectangle.getY() + rectangle.getHeight();
+
+        return left >= this.getX()
+                && right <= this.getX() + this.getWidth()
+                && top >= this.getY()
+                && bottom <= this.getY() + this.getHeight();
     }
-//    private boolean pointInCircle(double px, double py, Circle c) {
-//        double dx = px - c.getX();
-//        double dy = py - c.getY();
-//        return dx * dx + dy * dy <= c.getRadius() * c.getRadius();
-//    }
+
+    @Override
+    public boolean isContainsLine(Line line) {
+        return isPointInRectangle(line.getX(), line.getY())
+                && isPointInRectangle(line.getX2(), line.getY2());
+    }
+
+    @Override
+    public boolean isContainsCircle(Circle circle) {
+        double cx = circle.getX();
+        double cy = circle.getY();
+        double r = circle.getRadius();
+        return cx - r >= this.getX()
+                && cy - r >= this.getY()
+                && cx + r <= this.getX() + this.getWidth()
+                && cy + r <= this.getY() + this.getHeight();
+    }
+
+    private boolean isPointInRectangle(double px, double py)
+    {
+        return px >= this.getX() && px <= this.getX() + this.width
+                && py >= this.getY() && py <= this.getY() + this.height;
+    }
 
     /**
      * @return an SVG {@code <rect>} element string,
      *         e.g. {@code <rect x="5" y="5" width="10" height="10" fill="green" />}
      */
+
+    /**
+     * Returns the SVG representation of the rectangle.
+     *
+     * @return SVG {@code <rect>} element string
+     */
     @Override
     public String toSVG() {
-        return "<rect x=\"" + formatSVGNumber(getX()) + "\" y=\"" + formatSVGNumber(getY()) + "\" width=\"" + formatSVGNumber(width) + "\" height=\"" + formatSVGNumber(height) + "\" fill=\"" + fill + "\" />";
+        return "<rect x=\"" + formatSVGNumber(getX())
+                + "\" y=\"" + formatSVGNumber(getY())
+                + "\" width=\"" + formatSVGNumber(width)
+                + "\" height=\"" + formatSVGNumber(height)
+                + "\" fill=\"" + fill + "\" />";
     }
 
     /**
-     * @return a human-readable description, e.g. {@code rectangle 5 5 10 10 green}
+     * Returns a text description of the rectangle.
+     *
+     * @return rectangle description
      */
     @Override
     public String toString() {

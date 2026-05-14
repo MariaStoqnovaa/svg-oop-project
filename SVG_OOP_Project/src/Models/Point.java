@@ -1,12 +1,19 @@
 package Models;
+/**
+ * Represents a mutable point in a two-dimensional coordinate system.
+ *
+ * <p>This class is used as the anchor position of shapes and as the endpoint of
+ * line segments.</p>
+ */
+
+/**
+ * Represents a 2D point with mutable {@code x} and {@code y} coordinates.
+ * Used as the anchor point of every {@link Shape} and as the second
+ * endpoint of a {@link Line}.
+ */
 
 public class Point
 {
-    /**
-     * Represents a 2D point with mutable {@code x} and {@code y} coordinates.
-     * Used as the anchor point of every {@link Shape} and as the second
-     * endpoint of a {@link Line}.
-     */
 
     private double x;
     private double y;

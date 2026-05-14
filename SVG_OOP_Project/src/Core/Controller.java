@@ -15,6 +15,15 @@ import Commands.implementation.edit.CreateCommand;
 import Commands.implementation.edit.EraseCommand;
 import Commands.implementation.edit.TranslateCommand;
 import Commands.implementation.edit.WithinCommand;
+/**
+ * Parses user input and dispatches it to the corresponding command object.
+ *
+ * <p>The controller owns a single {@link ShapeRepository} instance that stores
+ * the current file state and all loaded shapes for the active session. It
+ * recognizes commands such as {@code open}, {@code close}, {@code save},
+ * {@code save as}, {@code help}, {@code exit}, {@code print}, {@code create},
+ * {@code erase}, {@code translate}, and {@code within}.</p>
+ */
 
 /**
  * Parses raw user input from the console and dispatches each line to
@@ -41,6 +50,14 @@ public class Controller {
      * @return the command's output, or an error / help message
      */
 
+
+    /**
+     * Parses one command line, validates its parameters, executes the matching
+     * command, and returns the textual result.
+     *
+     * @param input a single command line entered by the user
+     * @return the command result, a help message, or an error message
+     */
     public String execute(String input) {
         String[] parts = input.trim().split("\\s+");
 

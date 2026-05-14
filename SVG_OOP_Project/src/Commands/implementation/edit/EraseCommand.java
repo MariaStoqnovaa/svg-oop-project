@@ -5,18 +5,30 @@ import Core.ShapeRepository;
 import constants.Messages;
 import Models.Shape;
 
-
+/**
+ * Command that removes a shape by its user-visible number.
+ */
 public class EraseCommand extends Command {
 
     private Messages messages = new Messages();
     private ShapeRepository repository;
     private int figureNumber;
 
+    /**
+     * Creates an erase command.
+     *
+     * @param repository active shape repository
+     * @param figureNumber one-based number of the shape to remove
+     */
     public EraseCommand(ShapeRepository repository, int figureNumber) {
         this.repository = repository;
         this.figureNumber = figureNumber;
     }
-
+    /**
+     * Removes the requested shape if the number is valid.
+     *
+     * @return success or error message
+     */
     @Override
     public String execute() {
         int index = figureNumber - 1;

@@ -1,5 +1,7 @@
 package Models;
-
+/**
+ * Represents an SVG line segment defined by two endpoints and a stroke color.
+ */
 public class Line extends Shape {
 
     private Point endPoint;
@@ -27,6 +29,7 @@ public class Line extends Shape {
     }
 
     /** @return the Y coordinate of the second endpoint */
+
     public double getY2() {
         return endPoint.getY();
     }
@@ -35,6 +38,13 @@ public class Line extends Shape {
     public String getStroke() {
         return stroke;
     }
+
+    /**
+     * Moves both endpoints of the line by the given offsets.
+     *
+     * @param horizontal movement along the x-axis
+     * @param vertical movement along the y-axis
+     */
 
     /**
      * Moves both endpoints of this line by the given offsets so the
@@ -50,44 +60,47 @@ public class Line extends Shape {
     }
 
     /**
-     * Tests whether this line segment lies fully within the given region.
-     * Both endpoints must be inside the region; since rectangles and
-     * circles are convex, the entire segment then lies inside as well.
+     * Checks whether the line lies inside the given region.
      *
-     * @param region a {@link Rectangle} or {@link Circle} representing the region
+     * @param region rectangle or circle region
      * @return {@code true} if both endpoints are inside the region
      */
     @Override
     public boolean isInRegion(Shape region) {
-        if (region instanceof Rectangle r) {
 
-            return pointInRectangle(getX(),  getY(),  r)
-                    && pointInRectangle(getX2(), getY2(), r);
-        }
+        return region.isContainsLine(this);
+    }
 
-        if (region instanceof Circle c) {
-            double r2 = c.getRadius() * c.getRadius();
-            return pointInCircle(getX(),  getY(),  c, r2)
-                    && pointInCircle(getX2(), getY2(), c, r2);
-        }
-
+    @Override
+    public boolean isContainsRec(Rectangle rectangle) {
         return false;
     }
 
-    private boolean pointInRectangle(double px, double py, Rectangle r) {
-        return px >= r.getX() && px <= r.getX() + r.getWidth()
-                && py >= r.getY() && py <= r.getY() + r.getHeight();
+    @Override
+    public boolean isContainsLine(Line line) {
+        return false;
     }
 
-    private boolean pointInCircle(double px, double py, Circle c, double r2) {
-        double dx = px - c.getX();
-        double dy = py - c.getY();
-        return dx * dx + dy * dy <= r2;
+    @Override
+    public boolean isContainsCircle(Circle circle) {
+        return false;
     }
+
+//    private boolean pointInRectangle(double px, double py, Rectangle r) {
+//        return px >= r.getX() && px <= r.getX() + r.getWidth()
+//                && py >= r.getY() && py <= r.getY() + r.getHeight();
+//    }
+//
+//    private boolean pointInCircle(double px, double py, Circle c, double r2) {
+//        double dx = px - c.getX();
+//        double dy = py - c.getY();
+//        return dx * dx + dy * dy <= r2;
+//    }
 
     /**
-     * @return an SVG {@code <line>} element string,
-     *         e.g. {@code <line x1="0" y1="0" x2="10" y2="10" stroke="black" />}
+     * Returns the SVG representation of the line.
+     *
+     * @return SVG {@code <line>} element string
      */
     @Override
     public String toSVG() {
@@ -95,7 +108,9 @@ public class Line extends Shape {
     }
 
     /**
-     * @return a human-readable description, e.g. {@code line 0 0 10 10 black}
+     * Returns a text description of the line.
+     *
+     * @return line description
      */
     @Override
     public String toString() {
