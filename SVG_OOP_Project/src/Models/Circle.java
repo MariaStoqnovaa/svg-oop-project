@@ -107,6 +107,7 @@ public class Circle extends Shape {
         double dy = py - this.getY();
         return  dx * dx + dy * dy <= r2;
     }
+
     /**
      * Returns the SVG representation of the circle.
      *

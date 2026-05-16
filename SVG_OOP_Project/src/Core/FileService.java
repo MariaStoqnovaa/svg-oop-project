@@ -35,18 +35,25 @@ public class FileService {
         File file = new File(filePath);
 
         if (!file.exists()) {
-            return "";
+            throw new RuntimeException("Error: File \"" + filePath + "\" not found. Please try again.");
         }
 
-        StringBuilder content = new StringBuilder();
-        Scanner scanner = new Scanner(file);
+        try {
+            StringBuilder content = new StringBuilder();
+            Scanner scanner = new Scanner(file);
 
-        while (scanner.hasNextLine()) {
-            content.append(scanner.nextLine()).append("\n");
+            while (scanner.hasNextLine()) {
+                content.append(scanner.nextLine()).append("\n");
+            }
+
+            scanner.close();
+            return content.toString();
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException("Error reading file: " + filePath);
         }
 
-        scanner.close();
-        return content.toString();
     }
     
     /**
