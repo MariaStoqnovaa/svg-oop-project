@@ -30,68 +30,103 @@ public class SvgService {
 
     private String getValue(String tag, String attribute) {
         String key = attribute + "=\"";
-        int start = tag.indexOf(key);
 
-        if (start == -1) {
+        if(!tag.contains(key))
+        {
             return "";
         }
 
-        start += key.length();
-        int end = tag.indexOf("\"", start);
+        int start = tag.indexOf(key) + key.length();
+        String remaining = tag.substring(start);
 
-        if (end == -1) {
+        if(!remaining.contains("\""))
+        {
             return "";
         }
-
-        return tag.substring(start, end);
+        return  remaining.substring(0,remaining.indexOf("\""));
+//
+//        if (start == -1) {
+//            return "";
+//        }
+//
+//        start += key.length();
+//        int end = tag.indexOf("\"", start);
+//
+//        if (end == -1) {
+//            return "";
+//        }
+//
+//        return tag.substring(start, end);
     }
 
     private double getDoubleValue(String tag, String attribute) {
         return Double.parseDouble(getValue(tag, attribute));
     }
 
+    private String findFirstTag(String svgText,int position,boolean containsRect, boolean containsCircle, boolean containsLine)
+    {
+        String firstTag = null;
+        int firstIndex = svgText.length();
+
+        if(containsRect)
+        {
+            int recIndex = svgText.indexOf("<rect", position);
+            if(recIndex < firstIndex)
+            {
+                firstIndex = recIndex;
+                firstTag = "rect";
+            }
+        }
+        if(containsCircle)
+        {
+            int circleIndex = svgText.indexOf("<circle", position);
+            if(circleIndex < firstIndex)
+            {
+                firstIndex = circleIndex;
+                firstTag = "circle";
+            }
+        }
+        if(containsLine)
+        {
+            int lineIndex = svgText.indexOf("<line", position);
+            if(lineIndex < firstIndex)
+            {
+                firstIndex = lineIndex;
+                firstTag = "line";
+            }
+        }
+
+        return firstTag;
+    }
+
     private void findAllShapes(String svgText, IShapeRepository repo) {
         int position = 0;
 
-        while (true) {
-            int rectStart = svgText.indexOf("<rect", position);
-            int circleStart = svgText.indexOf("<circle", position);
-            int lineStart = svgText.indexOf("<line", position);
+        while (position <svgText.length())
+        {
+            String remaining = svgText.substring(position);
 
-            int start = -1;
-            String tagName = null;
+            boolean containsRect = remaining.contains("<rect");
+            boolean containsCircle = remaining.contains("<circle");
+            boolean containsLine = remaining.contains("<line");
 
-            if (rectStart != -1 && (start == -1 || rectStart < start)) {
-                start = rectStart;
-                tagName = "rect";
-            }
-
-            if (circleStart != -1 && (start == -1 || circleStart < start)) {
-                start = circleStart;
-                tagName = "circle";
-            }
-
-            if (lineStart != -1 && (start == -1 || lineStart < start))
+            if(!containsRect && !containsCircle && !containsLine)
             {
-                start = lineStart;
-                tagName = "line";
+                break;
             }
-
-            if (start == -1)
+            if(!remaining.contains(">"))
             {
                 break;
             }
 
-            int end = svgText.indexOf(">", start);
-            if (end == -1)
-            {
-                break;
-            }
+            String nameOfTag = findFirstTag(svgText,position,containsRect,containsCircle,containsLine);
+            int beginning = svgText.indexOf("<" + nameOfTag,position);
+            int end = svgText.indexOf(">",beginning);
 
-            String tag = svgText.substring(start, end + 1);
-            position = end + 1;
+            String tag = svgText.substring(beginning,end+1);
+            position = end+1;
 
-            if (tagName.equals("rect"))
+            if (nameOfTag.equals("rect"))
             {
                 double x = getDoubleValue(tag, "x");
                 double y = getDoubleValue(tag, "y");
@@ -101,7 +136,7 @@ public class SvgService {
 
                 repo.addShape(new Rectangle(x, y, width, height, color));
             }
-            else if (tagName.equals("circle"))
+            else if (nameOfTag.equals("circle"))
             {
                 double cx = getDoubleValue(tag, "cx");
                 double cy = getDoubleValue(tag, "cy");
@@ -110,7 +145,7 @@ public class SvgService {
 
                 repo.addShape(new Circle(cx, cy, r, color));
             }
-            else if (tagName.equals("line"))
+            else if (nameOfTag.equals("line"))
             {
                 double x1 = getDoubleValue(tag, "x1");
                 double y1 = getDoubleValue(tag, "y1");
@@ -119,8 +154,76 @@ public class SvgService {
                 String color = getValue(tag, "stroke");
 
                 repo.addShape(new Line(x1, y1, x2, y2, color));
-            }
+           }
         }
+//        while (true) {
+//            int rectStart = svgText.indexOf("<rect", position);
+//            int circleStart = svgText.indexOf("<circle", position);
+//            int lineStart = svgText.indexOf("<line", position);
+//
+//            int start = -1;
+//            String tagName = null;
+//
+//            if (rectStart != -1 && (start == -1 || rectStart < start)) {
+//                start = rectStart;
+//                tagName = "rect";
+//            }
+//
+//            if (circleStart != -1 && (start == -1 || circleStart < start)) {
+//                start = circleStart;
+//                tagName = "circle";
+//            }
+//
+//            if (lineStart != -1 && (start == -1 || lineStart < start))
+//            {
+//                start = lineStart;
+//                tagName = "line";
+//            }
+//
+//            if (start == -1)
+//            {
+//                break;
+//            }
+//
+//            int end = svgText.indexOf(">", start);
+//            if (end == -1)
+//            {
+//                break;
+//            }
+//
+//            String tag = svgText.substring(start, end + 1);
+//            position = end + 1;
+//
+//            if (tagName.equals("rect"))
+//            {
+//                double x = getDoubleValue(tag, "x");
+//                double y = getDoubleValue(tag, "y");
+//                double width = getDoubleValue(tag, "width");
+//                double height = getDoubleValue(tag, "height");
+//                String color = getValue(tag, "fill");
+//
+//                repo.addShape(new Rectangle(x, y, width, height, color));
+//            }
+//            else if (tagName.equals("circle"))
+//            {
+//                double cx = getDoubleValue(tag, "cx");
+//                double cy = getDoubleValue(tag, "cy");
+//                double r = getDoubleValue(tag, "r");
+//                String color = getValue(tag, "fill");
+//
+//                repo.addShape(new Circle(cx, cy, r, color));
+//            }
+//            else if (tagName.equals("line"))
+//            {
+//                double x1 = getDoubleValue(tag, "x1");
+//                double y1 = getDoubleValue(tag, "y1");
+//                double x2 = getDoubleValue(tag, "x2");
+//                double y2 = getDoubleValue(tag, "y2");
+//                String color = getValue(tag, "stroke");
+//
+//                repo.addShape(new Line(x1, y1, x2, y2, color));
+//            }
+//        }
     }
 
     /**

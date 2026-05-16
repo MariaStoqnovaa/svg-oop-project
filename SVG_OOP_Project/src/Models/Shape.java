@@ -58,7 +58,8 @@ public abstract class Shape {
      * @param horizontal how far to move along the X axis (positive = right)
      * @param vertical   how far to move along the Y axis (positive = down)
      */
-    public void translate(double horizontal, double vertical) {
+    public void translate(double horizontal, double vertical)
+    {
         position.translate(horizontal, vertical);
     }
 
